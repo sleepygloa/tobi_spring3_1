@@ -16,7 +16,7 @@ public class Main {
 
 		System.out.println("====================");
 		dao.deleteAll();
-		System.out.println("=====삭제성공=======");
+		System.out.println("=====delete success=======");
 
 		User user = new User();
 		user.setId("1");
@@ -24,17 +24,17 @@ public class Main {
 		user.setPassword("1234");
 
 		dao.add(user);
-		System.out.println("=====등록성공=======");
+		System.out.println("=====user add success=======");
 
 		User user2 = dao.get(user.getId());
-		System.out.println("사용자이름 --> " + user2.getName());
-		System.out.println("사용자비번 --> " + user2.getPassword());
-		System.out.println("사용자아이디 --> " + user2.getId());
-		System.out.println("=====조회성공=======");
+		System.out.println("user name --> " + user2.getName());
+		System.out.println("user passwd --> " + user2.getPassword());
+		System.out.println("user id --> " + user2.getId());
+		System.out.println("=====search success=======");
 
 		int cnt = dao.getCount();
-		System.out.println("사용자수 --> " + cnt);
-		System.out.println("=====사용자수 조회 성공=======");
+		System.out.println("getCount --> " + cnt);
+		System.out.println("=====search count success=======");
 
 
 	}

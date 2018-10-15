@@ -18,13 +18,13 @@ public class UserDao {
 	}
 
 	/**
-	 * ¸ðµç »ç¿ëÀÚ Á¤º¸ »èÁ¦ 1 -> 2 ÇüÅÂ·Î º¯È¯
-	 * 2°ú ¼Ò½º´Â add¿Í getId
-	 * 3°ú ¼Ò½º´Â deleteAll°ú getCount
-	 * ¿¹¿Ü Ã³¸® Ãß°¡
+	 * ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1 -> 2 ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½È¯
+	 * 2ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ addï¿½ï¿½ getId
+	 * 3ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ deleteAllï¿½ï¿½ getCount
+	 * ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ß°ï¿½
 	 * */
 
-	//»ç¿ëÀÚÁ¤º¸ Ãß°¡
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
@@ -47,7 +47,7 @@ public class UserDao {
 
 	}
 
-	//»ç¿ëÀÚÁ¤º¸ ¹ÝÈ¯
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 	public User get(String id) throws ClassNotFoundException, SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
@@ -55,7 +55,7 @@ public class UserDao {
 
 		try {
 			c = dataSource.getConnection();
-			ps = c.prepareStatement("select * from TB_TOBI_USER where id = ?");
+			ps = c.prepareStatement("select * from TB_TOBI_USER where id = " + id);
 
 			rs = ps.executeQuery();
 			rs.next();
@@ -77,7 +77,7 @@ public class UserDao {
 
 	}
 
-	//¸ðµç »ç¿ëÀÚ Á¤º¸ »èÁ¦ 1
+	//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1
 //	public void deleteAll() throws SQLException {
 //		Connection c = dataSource.getConnection();
 //
@@ -88,7 +88,7 @@ public class UserDao {
 //		c.close();
 //	}
 
-	//¸ðµç»ç¿ëÀÚ Á¤º¸ »èÁ¦ 2
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2
 	public void deleteAll() throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
@@ -105,7 +105,7 @@ public class UserDao {
 		}
 	}
 
-	//»ç¿ëÀÚÁ¤º¸ ¼ö ¹ÝÈ¯
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	public int getCount() throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
