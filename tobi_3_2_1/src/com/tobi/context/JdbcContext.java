@@ -1,7 +1,9 @@
 package com.tobi.context;
 
+import com.tobi.dao.AddStatement;
 import com.tobi.dao.DeleteAllStatement;
 import com.tobi.dao.StatementStrategy;
+import com.tobi.domain.User;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -9,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class JdbcContext {
-	
+
 	private DataSource dataSource;
 
 	public void setDataSource(DataSource dataSource) {
@@ -17,9 +19,9 @@ public class JdbcContext {
 	}
 
 	/**
-	 * jdbcContextWithStatementStrategy 와 deleteAll 은 원래 하나였으나
-	 * jdbc~ 의 connection 부분을 따로 , deleteAll 부분의 독립적인 부분을 빼서
-	 * 추후 중복되는 부분을 공통으로 쓰기 위해 분리 시킨 코드
+	 * jdbcContextWithStatementStrategy �� deleteAll �� �썝�옒 �븯�굹���쑝�굹
+	 * jdbc~ �쓽 connection 遺�遺꾩쓣 �뵲濡� , deleteAll 遺�遺꾩쓽 �룆由쎌쟻�씤 遺�遺꾩쓣 鍮쇱꽌
+	 * 異뷀썑 以묐났�릺�뒗 遺�遺꾩쓣 怨듯넻�쑝濡� �벐湲� �쐞�빐 遺꾨━ �떆�궓 肄붾뱶
 	 * */
 	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
 		Connection c = null;
@@ -51,6 +53,11 @@ public class JdbcContext {
 
 	public void deleteAll() throws SQLException {
 		StatementStrategy st = new DeleteAllStatement();
+		jdbcContextWithStatementStrategy(st);
+	}
+
+	public void add(User user) throws SQLException {
+		StatementStrategy st = new AddStatement(user);
 		jdbcContextWithStatementStrategy(st);
 	}
 
