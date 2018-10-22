@@ -13,19 +13,13 @@ public class JdbcContextTest {
 	 * JUNIT 라이브러리 추가
 	 * */
 	@Test
-	public void testAdd() throws Exception {
-		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
-
-		userDao.add(getUser());
-	}
-
-	@Test
-	public void testDeleteAll() throws Exception {
+	public void test() throws Exception {
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
 
 		userDao.deleteAll();
+
+		userDao.add(getUser());
 	}
 
 
