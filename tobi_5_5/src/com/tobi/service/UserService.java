@@ -32,6 +32,11 @@ public class UserService {
 	private UserDao userDao;
 	private DataSource dataSource;
 	private PlatformTransactionManager transactionManager;
+	private MailSender mailSender;
+
+	public void setMailSender(MailSender mailSender) {
+		this.mailSender = mailSender;
+	}
 
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -40,13 +45,13 @@ public class UserService {
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-	
+
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-	
+
 	public void upgradeLevels() throws SQLException {
-		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+		TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
 		try {
 			List<User> users = userDao.getAll();
@@ -56,16 +61,13 @@ public class UserService {
 					upgradeLevel(user);
 				}
 			}
-			this.transactionManager.commit(status);
+			transactionManager.commit(status);
 		} catch (RuntimeException e) {
-			this.transactionManager.rollback(status);
+			transactionManager.rollback(status);
 			throw e;
 		}
 	}
-	
-	/**
-	 * 신규유저는 BASIC
-	 * */
+
 	public void add(User user) {
 		if (user.getLevel() == null) {
 			user.setLevel(Level.BASIC);
@@ -88,34 +90,21 @@ public class UserService {
 				throw new IllegalArgumentException("Unknown Level: " + currentLevel);
 		}
 	}
-	//default javaMail code
-	private void sendUpgradeEMail(User user) {
-		Properties props = new Properties();
-		props.put("mail.smtp.host", "mail.ksug.org");
-		//Session object 가 있어야 메일메세지를 생성 할 수 있다.
-		Session s = Session.getInstance(props, null);
-
-		MimeMessage message = new MimeMessage(s);
-		try {
-			message.setFrom(new InternetAddress("sleepygloa@gmail.com"));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-			message.setSubject("Upgrade 안내 ");
-			message.setText("Your grade is Upgraded : " + user.getLevel().name());
-			
-			Transport.send(message);
-		}catch(AddressException e) {
-			throw new RuntimeException(e);
-		}catch(MessagingException e) {
-			throw new RuntimeException(e);
-		}catch(UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	protected void upgradeLevel(User user) {
 		user.upgradeLevel();
 		userDao.update(user);
 		sendUpgradeEMail(user);
+	}
+
+	private void sendUpgradeEMail(User user) {
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setFrom("sleepygloa@gmail.com");
+		mailMessage.setSubject("Upgrade 안내");
+		mailMessage.setText("사용자님의 등급이 " + user.getLevel().name());
+
+		mailSender.send(mailMessage);
 	}
 	
 }
