@@ -1,10 +1,7 @@
 package com.tobi.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import java.util.Arrays;
+
 import java.util.List;
 
 import org.junit.Before;
@@ -19,9 +16,18 @@ import com.tobi.dao.UserDao;
 import com.tobi.domain.Level;
 import com.tobi.domain.User;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import static com.tobi.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
+import static com.tobi.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class})
+@ContextConfiguration(classes = AppConfig.class)
 public class UserServiceTest {
+	
+	
+	
 	private List<User> users;
 
 	@Autowired
@@ -29,42 +35,70 @@ public class UserServiceTest {
 
 	@Autowired
 	private UserDao userDao;
-
+	
 	@Before
 	public void setUp() throws Exception {
 		users = Arrays.asList(
-				new User("bumjin", "諛뺣쾾吏�", "p1", Level.BASIC, 49, 0),
-				new User("joytouch", "媛뺣챸�꽦", "p1", Level.BASIC, 50, 0),
-				new User("erwins", "�떊�듅�븳", "p1", Level.SILVER, 60, 29),
-				new User("madnite1", "�씠�긽�샇", "p1", Level.SILVER, 60, 30),
-				new User("green", "�삤誘쇨퇋", "p1", Level.GOLD, 100, 100)
+				new User("5", "arr5", "1234", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0),
+				new User("6", "arr6", "1234", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+				new User("7", "arr7", "1234", Level.SILVER, MIN_RECOMMEND_FOR_GOLD-1, 29),
+				new User("8", "arr8", "1234", Level.SILVER, MIN_RECOMMEND_FOR_GOLD, 30),
+				new User("9", "arr9", "1234", Level.GOLD, Integer.MAX_VALUE, 100)
 		);
 	}
-
+	
+	/**
+	 * 1. User Delete
+	 * 2. User add
+	 * 3. User(0) Auth update
+	 * */
 	@Test
-	public void bean() throws Exception {
-		assertThat(this.userService, is(notNullValue()));
-	}
-
-	@Test
-	public void testUpgradeLevels() throws Exception {
+	public void updateLevel() {
 		userDao.deleteAll();
-
-		for (User user : users) {
+		for(User user : users) {
 			userDao.add(user);
 		}
-
+		
 		userService.upgradeLevels();
-
+		
 		checkLevel(users.get(0), Level.BASIC);
-		checkLevel(users.get(1), Level.SILVER);
-		checkLevel(users.get(2), Level.SILVER);
-		checkLevel(users.get(3), Level.GOLD);
-		checkLevel(users.get(4), Level.GOLD);
+		
+		checkLevelUpgraded(users.get(0), false);
+		checkLevelUpgraded(users.get(1), true);
+		checkLevelUpgraded(users.get(2), false);
+		checkLevelUpgraded(users.get(3), true);
+		checkLevelUpgraded(users.get(4), false);
+		
 	}
-
+	
+	private void checkLevelUpgraded(User user, boolean upgraded) {
+		
+		User userUpdate = userDao.get(user.getId());
+		
+		if(upgraded) {
+			assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+		}
+		else {
+			assertThat(userUpdate.getLevel(), is(user.getLevel()));
+		}
+			
+	}
+	
+	/**
+	 * check user Auth, after user add.
+	 * */
+	private void checkLevel(User user, Level expectedLevel) {
+		User userUpdate = userDao.get(user.getId());
+		assertThat(userUpdate.getLevel(), is(expectedLevel));
+	}
+	
+	/**
+	 * 1. update delete
+	 * 2. user VO(array) date setting -> 5th(GOLD), 0th(BASIC)
+	 * 3. add user VO
+	 * */
 	@Test
-	public void testAdd() throws Exception {
+	public void add() throws Exception {
 		userDao.deleteAll();
 
 		User userWithLevel = users.get(4);
@@ -80,9 +114,7 @@ public class UserServiceTest {
 		assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
 		assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
 	}
+	
 
-	private void checkLevel(User user, Level expectedLevel) {
-		User userUpdate = userDao.get(user.getId());
-		assertThat(userUpdate.getLevel(), is(expectedLevel));
-	}
+	
 }

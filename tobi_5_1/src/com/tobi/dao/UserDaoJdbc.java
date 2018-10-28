@@ -9,10 +9,13 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.tobi.domain.Level;
 import com.tobi.domain.User;
 
 public class UserDaoJdbc implements UserDao {
+	
 	private JdbcTemplate jdbcTemplate;
+	
 	private RowMapper<User> userRowMapper = new RowMapper<User>() {
 		@Override
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -33,7 +36,9 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public void add(User user) {
-		this.jdbcTemplate.update("insert into TB_TOBI_USER (id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)", user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+		this.jdbcTemplate.update(
+				"insert into TB_TOBI_USER(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)",
+				user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
 	}
 
 	@Override

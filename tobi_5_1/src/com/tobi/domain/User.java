@@ -1,6 +1,7 @@
 package com.tobi.domain;
 
 public class User {
+	
 	private String id;
 	private String name;
 	private String password;
@@ -18,6 +19,16 @@ public class User {
 		this.level = level;
 		this.login = login;
 		this.recommend = recommend;
+	}
+	
+	public void upgradeLevel() {
+		Level nextLevel = this.level.nextLevel();
+		if(nextLevel == null) {
+			throw new IllegalStateException(this.level + " is not upgraded.");
+		}
+		else {
+			this.level = nextLevel;
+		}
 	}
 
 	public String getId() {
@@ -67,4 +78,6 @@ public class User {
 	public void setRecommend(int recommend) {
 		this.recommend = recommend;
 	}
+	
+	
 }

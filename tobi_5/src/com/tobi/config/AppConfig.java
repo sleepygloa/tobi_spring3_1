@@ -35,9 +35,9 @@ public class AppConfig {
 		userDao.setDataSource(dataSource());
 		return userDao;
 	}
-
+	
 	@Bean
-	public UserService userService(UserDao userDao) {
+	public UserService userService(UserDao userDao) throws ClassNotFoundException {
 		UserService userService = new UserService();
 
 		userService.setUserDao(userDao);

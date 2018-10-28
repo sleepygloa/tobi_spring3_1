@@ -7,6 +7,8 @@ import com.tobi.domain.User;
 public interface UserDao {
 
 	public void add(User user);
+	
+	public void update(User user1);
 
 	public User get(String id);
 
@@ -15,6 +17,4 @@ public interface UserDao {
 	public int getCount();
 
 	public List<User> getAll();
-
-	void update(User user);
 }

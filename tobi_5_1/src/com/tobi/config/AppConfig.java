@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import com.tobi.dao.UserDao;
 import com.tobi.dao.UserDaoJdbc;
+import com.tobi.service.UserService;
 
 @Configuration
 public class AppConfig {
@@ -34,9 +35,9 @@ public class AppConfig {
 		userDao.setDataSource(dataSource());
 		return userDao;
 	}
-
+	
 	@Bean
-	public UserService userService(UserDao userDao) {
+	public UserService userService(UserDao userDao) throws ClassNotFoundException {
 		UserService userService = new UserService();
 
 		userService.setUserDao(userDao);
