@@ -1,5 +1,6 @@
 package com.tobi.service;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.tobi.config.AppConfig;
 import com.tobi.dao.UserDao;
@@ -37,6 +39,9 @@ public class UserServiceTest {
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	PlatformTransactionManager transactionManager;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -74,6 +79,7 @@ public class UserServiceTest {
 	public void upgradeAllOrNothing() {
 		UserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);
+		testUserService.setTransactionManager(transactionManager);
 		
 		userDao.deleteAll();
 		for(User user : users) userDao.add(user);
@@ -83,6 +89,8 @@ public class UserServiceTest {
 			fail("TestUserServiceException expected");
 		}
 		catch(TestUserServiceException e) {
+			
+		}catch(SQLException se) {
 			
 		}
 		

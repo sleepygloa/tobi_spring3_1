@@ -51,7 +51,7 @@ public class UserService {
 		}
 	}
 
-	private void upgradeLevel(User user) {
+	protected void upgradeLevel(User user) {
 		if (user.getLevel() == Level.BASIC) user.setLevel(Level.SILVER);
 		else if (user.getLevel() == Level.SILVER) user.setLevel(Level.GOLD);
 		
