@@ -13,8 +13,6 @@ public class UserDao {
 	String selet = "";
 
 	public void add(User user) throws ClassNotFoundException, SQLException {
-//		Class.forName(dbClass);
-//		Connection c = DriverManager.getConnection(dbUrl, "root", "1234");
 		Connection c = getConnection();
 
 		PreparedStatement ps = c.prepareStatement("insert into TB_TOBI_USER (id, name, password) values (?, ?, ?)");
@@ -29,8 +27,6 @@ public class UserDao {
 	}
 
 	public User get(String id) throws ClassNotFoundException, SQLException {
-//		Class.forName(dbClass);
-//		Connection c = DriverManager.getConnection(dbUrl, "root", "1234");
 		Connection c = getConnection();
 
 		PreparedStatement ps = c.prepareStatement("select * from TB_TOBI_USER where id = ?");
@@ -53,7 +49,7 @@ public class UserDao {
 
 	private Connection getConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(dbClass);
-		return DriverManager.getConnection(dbUrl, "root", "1234");
+		return DriverManager.getConnection(dbUrl, "test", "1234");
 	}
 
 }
