@@ -69,9 +69,9 @@ public class UserDao {
 	}
 
 	//���� Ŀ�ؼ� ���
-	private Connection getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName(dbClass);
-		return DriverManager.getConnection(dbUrl, "test", "1234");
-	}
+//	private Connection getConnection() throws ClassNotFoundException, SQLException {
+//		Class.forName(dbClass);
+//		return DriverManager.getConnection(dbUrl, "test", "1234");
+//	}
 
 }

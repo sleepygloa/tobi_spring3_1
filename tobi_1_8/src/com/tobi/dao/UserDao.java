@@ -1,23 +1,31 @@
 package com.tobi.dao;
 
-import com.tobi.domain.User;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.tobi.domain.User;
+
 public class UserDao {
 
-	String add = "";
-	String selet = "";
-
-	public DataSource dataSource;
-
+	private DataSource dataSource;
+	private ConnectionMaker connecionMaker;
+	
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-
+	
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
+		this.connecionMaker = connectionMaker;
+	}
+	
+	//user add
 	public void add(User user) throws ClassNotFoundException, SQLException {
+//		Connection c = connecionMaker.makeConnection();
 		Connection c = dataSource.getConnection();
 
 		PreparedStatement ps = c.prepareStatement("insert into TB_TOBI_USER (id, name, password) values (?, ?, ?)");
@@ -31,7 +39,9 @@ public class UserDao {
 		c.close();
 	}
 
+	//user get
 	public User get(String id) throws ClassNotFoundException, SQLException {
+//		Connection c = connecionMaker.makeConnection(); //�������̽�
 		Connection c = dataSource.getConnection();
 
 		PreparedStatement ps = c.prepareStatement("select * from TB_TOBI_USER where id = ?");

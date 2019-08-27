@@ -2,6 +2,12 @@ package com.tobi;
 
 import java.sql.SQLException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+import com.tobi.dao.DaoFactory;
 import com.tobi.dao.UserDao;
 import com.tobi.domain.User;
 
@@ -10,29 +16,35 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		UserDao ud = new UserDao();
+		//ê¸°ì¡´ í´ë˜ìŠ¤ì—ì„œ congifuration, Bean ì„ ë“±ë¡í•˜ì—¬ ì‚¬ìš©í•˜ëŠ” ë°©ì‹
+//		ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+//		UserDao ud = context.getBean("userDao", UserDao.class);
+		
+		//xmlì„ ë“±ë¡í•˜ì—¬ ì‚¬ìš©í•˜ëŠ” ë°©ì‹
+		ApplicationContext context = new GenericXmlApplicationContext("/com/tobi/xml/applicationContext.xml");
+		UserDao ud = context.getBean("UserDao", UserDao.class);
 
 		try {
 			System.out.println("====================");
-			System.out.println("»õ·Î¿î À¯Á® ÀÔ·Â");
+			System.out.println("ì‚¬ìš©ì ì •ë³´ì…ë ¥");
 			User user = new User();
 			user.setId("1");
 			user.setName("root");
 			user.setPassword("password");
 			ud.add(user);
-			//»õ·Î¿î À¯Á® ÀÔ·Â ¼º°ø
-			System.out.println("À¯Á® ÀÔ·Â ¼º°ø");
+			//ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½
+			System.out.println("ì‚¬ìš©ì ì •ë³´ì…ë ¥ ë");
 			System.out.println("====================");
 
 
 			System.out.println("====================");
-			System.out.println("ÀÔ·ÂÇÑ À¯Á®Á¤º¸ È£Ãâ");
+			System.out.println("ì‚¬ìš©ì ì •ë³´ì…ë ¥");
 			User user2 = ud.get("1");
-			//ÀÔ·ÂÇÑ µ¥ÀÌÅÍ¸¦ ºÒ·¯¿Í ÀÔ·Â È®ÀÎ
+			//ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ È®ï¿½ï¿½
 			System.out.println("user id -->  " + user2.getId());
 			System.out.println("user name --> " + user2.getName());
 			System.out.println("user password --> " + user2.getPassword());
-			System.out.println("À¯Á®Á¤º¸ È£Ãâ ¼º°ø");
+			System.out.println("ì‚¬ìš©ì ì •ë³´ì…ë ¥ ë");
 			System.out.println("====================");
 		} catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException error");

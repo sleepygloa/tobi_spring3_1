@@ -19,25 +19,25 @@ public class Main {
 
 		try {
 			System.out.println("====================");
-			System.out.println("���ο� ���� �Է�");
+			System.out.println("사용자 정보입력");
 			User user = new User();
 			user.setId("1");
 			user.setName("root");
 			user.setPassword("password");
 			ud.add(user);
 			//���ο� ���� �Է� ����
-			System.out.println("���� �Է� ����");
+			System.out.println("사용자 정보입력 끝");
 			System.out.println("====================");
 
 
 			System.out.println("====================");
-			System.out.println("�Է��� �������� ȣ��");
+			System.out.println("사용자 정보입력");
 			User user2 = ud.get("1");
 			//�Է��� �����͸� �ҷ��� �Է� Ȯ��
 			System.out.println("user id -->  " + user2.getId());
 			System.out.println("user name --> " + user2.getName());
 			System.out.println("user password --> " + user2.getPassword());
-			System.out.println("�������� ȣ�� ����");
+			System.out.println("사용자 정보입력 끝");
 			System.out.println("====================");
 		} catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException error");
