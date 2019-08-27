@@ -1,28 +1,9 @@
-### 설명
-팩토리 - 객체의 생성방법을 결정하고 만들어진 오브젝트를 돌려주는 기능을 하는 것.
+# 설명 
 
-1. User.java 의 VO
-2. UserDao.java 의 Connection 및 sql 실행
-3. 2번읜 Connection 부분을 공통으로 분리
-4. 업체에서 접근할 Dao 를 따로 분리, (DUserDao.java, NUserDao.java)
-5. Connection Interface 구현하여 결합도를 낮춤(DB 정보가 없어도 에러나지 않음, 할때마다 변경하지 않아도됨)
-6. DB Connection 정보를 다른 곳에서 불러와 실행 가능하게 변경.
-1-4. DaoFactory 생성, 함으로 userDao 를 수정할 필요가 없다(중요한 로직, 수정 하면 안되는 로직등)
-1-5. Ioc, @Configuration, @Bean 등록
-1-7. set~을 통한 Connection 주입, 그러나 주고받지 못해 의존도가 높아짐, 
-UserDaoConnectionCountingTest 으로 주요소스 와 같은형테로 주입하기도함. 
+- Bean을 등록하는 방법 2가지
+> java.class 에서 @Configuration, @Bean 을 등록하여 사용하는 방법
+> xml을 이용하여 등록하는 방법
 
-
-
-
-주요소스.
-AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(CountingDaoFactory.class);
-UserDao dao = context.getBean("userDao", UserDao.class);
-		
-
-### 실행 방법
-Main.java 실행
-UserDaoConnectionCountingText.java 실행
-
-결과 :
-Connection counter : 0
+- DB Connection 을 이용하는 방법
+> 순수 java를 이용 DriverManager 에 DB정보 입력하는 방법
+> xml에 DB 정보를 입력해 사용하는 방법
