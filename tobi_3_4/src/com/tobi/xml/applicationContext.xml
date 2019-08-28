@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- <bean id="DConnectionMaker" class="com.tobi.dao.DConnectionMaker"></bean>
+
+	<bean id="UserDao" class="com.tobi.dao.UserDao">
+		<property name="connectionMaker" ref="DConnectionMaker"></property>
+	</bean> -->
+	
+	<bean id="UserDao" class="com.tobi.dao.UserDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jdbcContext" ref="jdbcContext" />
+	</bean>
+	
+	<bean id="JdbcContext" class="com.tobi.datasource.JdbcContext">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="org.mariadb.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mariadb://61.252.235.153:18081/seonhoblog?useUnicode=true&amp;characterEncoding=utf8"></property>
+		<property name="username" value="test"></property>
+		<property name="password" value="1234"></property>
+	</bean>
+	
+	
+	
+</beans>
