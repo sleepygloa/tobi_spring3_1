@@ -1,17 +1,20 @@
 package com.tobi.domain;
 
+import java.util.List;
+
 public class User {
-	
 	private String id;
 	private String name;
 	private String password;
-	private Level level;
-	private int login;
-	private int recommend;
-
-	public User() {
-	}
-
+	
+	private static final int BASIC = 1;
+	private static final int SILVER = 1;
+	private static final int GOLD = 1;
+	
+	Level level;
+	int login;
+	int recommend;
+	
 	public User(String id, String name, String password, Level level, int login, int recommend) {
 		this.id = id;
 		this.name = name;
@@ -21,16 +24,9 @@ public class User {
 		this.recommend = recommend;
 	}
 	
-	public void upgradeLevel() {
-		Level nextLevel = this.level.nextLevel();
-		if(nextLevel == null) {
-			throw new IllegalStateException(this.level + " is not upgraded.");
-		}
-		else {
-			this.level = nextLevel;
-		}
+	public User() {
 	}
-
+	
 	public String getId() {
 		return id;
 	}
@@ -54,11 +50,11 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public Level getLevel() {
 		return level;
 	}
-
+	
 	public void setLevel(Level level) {
 		this.level = level;
 	}
@@ -77,6 +73,15 @@ public class User {
 
 	public void setRecommend(int recommend) {
 		this.recommend = recommend;
+	}
+	
+	public void upgradeLevel() {
+		Level nextLevel = this.level.nextLevel();
+		if(nextLevel == null) {
+			throw new IllegalStateException(this.level + " is not possible to upgrade level");
+		}else {
+			this.level = nextLevel;
+		}
 	}
 	
 	
