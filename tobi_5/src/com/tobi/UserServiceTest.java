@@ -1,7 +1,15 @@
 package com.tobi;
 
+import static com.tobi.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
+import static com.tobi.service.UserService.MIN_RECOMMNED_FOR_GOLD;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,17 +17,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.tobi.domain.Level;
 import com.tobi.domain.User;
 import com.tobi.interfaces.UserDao;
 import com.tobi.service.UserService;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import static com.tobi.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.tobi.service.UserService.MIN_RECOMMNED_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/com/tobi/xml/applicationContext.xml")
@@ -27,6 +30,12 @@ public class UserServiceTest {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private DataSource dataSource;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	List<User> users;
 	
@@ -45,19 +54,19 @@ public class UserServiceTest {
 		
 	}
 	
-	@Test
-	public void updateLevels() {
-		userDao.deleteAll();
-		for(User user : users) { userDao.add(user); }
-		
-		userService.upgradeLevels();
-		
-		checkLevelUpgraded(users.get(0), false);
-		checkLevelUpgraded(users.get(1), true);
-		checkLevelUpgraded(users.get(2), false);
-		checkLevelUpgraded(users.get(3), true);
-		checkLevelUpgraded(users.get(4), false);
-	}
+//	@Test
+//	public void updateLevels() {
+//		userDao.deleteAll();
+//		for(User user : users) { userDao.add(user); }
+//		
+//		userService.upgradeLevels();
+//		
+//		checkLevelUpgraded(users.get(0), false);
+//		checkLevelUpgraded(users.get(1), true);
+//		checkLevelUpgraded(users.get(2), false);
+//		checkLevelUpgraded(users.get(3), true);
+//		checkLevelUpgraded(users.get(4), false);
+//	}
 	
 	private void checkLevelUpgraded(User user, Boolean upgraded) {
 		User userUpdate = userDao.get(user.getId());
@@ -94,8 +103,47 @@ public class UserServiceTest {
 		
 		assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
 		assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
+	}
+	
+	
+	static class TestUserService extends UserService{
+		private String id;
+		
+		private TestUserService(String id) {
+			this.id = id;
+		} 
+		
+		protected void upgradeLevel(User user) {
+			if(user.getId().equals(this.id)) {
+				super.upgradeLevel(user);
+			}
+		}
+	}
+	
+	static class TestUserServiceException extends RuntimeException{
+	}
+	
+	@Test
+	public void upgradeAllOrNothing() throws Exception {
+		UserService testUserService = new TestUserService(users.get(3).getId());
+		testUserService.setUserDao(this.userDao);
+//		testUserService.setDataSource(this.dataSource);
+		testUserService.setTransactionManager(this.transactionManager);
 		
 		
+		userDao.deleteAll();
+		for(User user : users) {
+			userDao.add(user);
+		}
+		
+		try {
+			testUserService.upgradeLevels();
+		}catch(TestUserServiceException e) {
+			fail("TestUserServiceException expected ");
+			
+		}
+		
+		checkLevelUpgraded(users.get(1), false);
 	}
 	
 }
