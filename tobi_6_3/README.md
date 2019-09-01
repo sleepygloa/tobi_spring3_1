@@ -1,4 +1,8 @@
 # 설명 
 
-- UserService 에 기능을 부여하고, UserServiceTx에 트랜젝션코드, UserServiceImpl 에 비즈니스로직만 나누어 구현한다.
-- 순서상으로는 UserService -> UserServiceTx -> UserServiceImpl -> UserServiceTest 순으로 주입되고, UserServiceTest 의 @Test 을 실행하게 된다.
+- 프록시 패턴을 이용.
+- 프록시 패턴의 트랜젝션 기능을 이용.
+
+> 프록시 패턴, 부모와 자식 관계 아니면, 비즈니스로직이 진행 되는 형태에서, 기초가 되는 클래스나 인터페이스를 바라보는 형태다.
+> 기초가 되는 클래스나 인터페이스에 부입되어있는 부가기능을 이용하여 다른 기초가 되는 클래스나 인터페이스를 호출하는 형태이다.
+> 부가기능은 언제든지 바뀔수 있다.
