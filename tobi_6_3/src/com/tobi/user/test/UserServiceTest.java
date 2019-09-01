@@ -5,29 +5,26 @@ import static com.tobi.user.service.UserServiceImpl.MIN_RECOMMNED_FOR_GOLD;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.framework.interfaces.MailSender;
 import com.framework.util.MockMailSender;
+import com.tobi.reflection.TransactionHandler;
 import com.tobi.user.dao.UserDaoJdbc;
 import com.tobi.user.domain.Level;
 import com.tobi.user.domain.User;
-import com.tobi.user.interfaces.UserDao;
 import com.tobi.user.interfaces.UserService;
 import com.tobi.user.service.UserServiceImpl;
-import com.tobi.user.service.UserServiceTx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/com/tobi/xml/applicationContext.xml")
@@ -181,9 +178,18 @@ public class UserServiceTest {
 		testUserService.setUserDao(this.userDao);
 //		testUserService.setMailSender(mailSender);
 		
-		UserServiceTx txUserService = new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(txUserService);
+		//기본 transaction 클래스이용
+//		UserServiceTx txUserService = new UserServiceTx();
+//		txUserService.setTransactionManager(transactionManager);
+//		txUserService.setUsetrService(txUserService);
+		
+		
+		//프록시 타입 transaction 이용
+		TransactionHandler txHandler = new TransactionHandler();
+		txHandler.setTarget(testUserService);
+		txHandler.setTransactionManager(transactionManager);txHandler.setPattern("upgradeLevels");
+		UserService txUserService = (UserService)Proxy.newProxyInstance(
+				getClass().getClassLoader(), new Class[] { UserService.class }, txHandler);
 		
 		
 		userDao.deleteAll();
