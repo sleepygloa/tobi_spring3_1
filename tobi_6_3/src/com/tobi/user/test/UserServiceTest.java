@@ -5,21 +5,21 @@ import static com.tobi.user.service.UserServiceImpl.MIN_RECOMMNED_FOR_GOLD;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.framework.util.MockMailSender;
-import com.tobi.reflection.TransactionHandler;
 import com.tobi.user.dao.UserDaoJdbc;
 import com.tobi.user.domain.Level;
 import com.tobi.user.domain.User;
@@ -43,6 +43,9 @@ public class UserServiceTest {
 	
 	@Autowired
 	private UserDaoJdbc userDao;
+	
+	@Autowired
+	ApplicationContext context;
 	
 //	@Autowired
 //	private MailSender mailSender;
@@ -88,9 +91,8 @@ public class UserServiceTest {
 		assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
 	}
 	
-	@Test
-	@DirtiesContext
 	//userDao -> MockUserDao
+	@Test
 	public void upgradeLevels() {
 //		userDao.deleteAll();
 //		for(User user : users) userDao.add(user);
@@ -173,6 +175,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void upgradeAllOrNothing() throws Exception {
 		UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);
@@ -185,12 +188,21 @@ public class UserServiceTest {
 		
 		
 		//프록시 타입 transaction 이용
-		TransactionHandler txHandler = new TransactionHandler();
-		txHandler.setTarget(testUserService);
-		txHandler.setTransactionManager(transactionManager);txHandler.setPattern("upgradeLevels");
-		UserService txUserService = (UserService)Proxy.newProxyInstance(
-				getClass().getClassLoader(), new Class[] { UserService.class }, txHandler);
+//		TransactionHandler txHandler = new TransactionHandler();
+//		txHandler.setTarget(testUserService);
+//		txHandler.setTransactionManager(transactionManager);txHandler.setPattern("upgradeLevels");
+//		UserService txUserService = (UserService)Proxy.newProxyInstance(
+//				getClass().getClassLoader(), new Class[] { UserService.class }, txHandler);
 		
+		
+//		TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+//		txProxyFactoryBean.setTarget(testUserService);
+//		UserService txUserService = (UserService)txProxyFactoryBean.getObject();
+		
+		//동적 프록시의 advisor와 pointcut 적용
+		ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
+		txProxyFactoryBean.setTarget(testUserService);
+		UserService txUserService = (UserService)txProxyFactoryBean.getObject();
 		
 		userDao.deleteAll();
 		for(User user : users) userDao.add(user);
