@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+   http://www.springframework.org/schema/tx
+   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	
+	<bean id="userService" class="com.tobi.user.service.UserServiceImpl">
+		<property name="userDao" ref="UserDao" />
+		<!-- <property name="mailSender" ref="mailSender" /> -->
+	</bean>
+	
+	<bean id="testUserService" class="com.tobi.user.test.UserServiceTest$TestUserService" parent="userService" /> 
+
+
+
+
+
+	<!-- AOP 적용  -->
+<!--  	<bean id="transactionAdvice" class="com.framework.proxy.TransactionAdvice">
+		<property name="transactionManager" ref="transactionManager"></property>
+	</bean> -->
+	
+	<!-- 트랜젝션 세부속성제어 -->
+<!--   	<bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean> -->
+ 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<!-- <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" /> -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	
+	<!-- 비즈니스 로직과, 배치작업을 제어하는 트랜젝션의 속성 제어. -->
+<!-- 	<aop:config>
+		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="bean(*Service)" />
+		<aop:advisor advice-ref="batchTxAdvice" pointcut-ref="execution(a.b.*BatchJob.*.(..))" />
+	</aop:config> 
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
+			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	<tx:advice id="batchTxAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
+			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	-->
+	<aop:config>
+		<!-- <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))" /> -->
+		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
+	</aop:config>
+	
+ 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	
+	<!-- <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" ref="mail.server.com" />
+	</bean> -->
+
+ 	<bean id="UserDao" class="com.tobi.user.dao.UserDaoJdbc">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="org.mariadb.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mariadb://61.252.235.153:18081/seonhoblog?useUnicode=true&amp;characterEncoding=utf8"></property>
+		<property name="username" value="test"></property>
+		<property name="password" value="1234"></property>
+	</bean>
+	
+
+	
+	
+</beans>
+
+
