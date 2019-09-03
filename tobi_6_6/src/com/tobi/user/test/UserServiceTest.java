@@ -11,18 +11,20 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.dao.TransientDataAccessResourceException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.PlatformTransactionManager;
 
+import com.framework.util.mail.interfaces.MailSender;
 import com.framework.util.mail.service.MockMailSender;
 import com.tobi.user.dao.UserDaoJdbc;
 import com.tobi.user.domain.Level;
 import com.tobi.user.domain.User;
+import com.tobi.user.interfaces.UserDao;
 import com.tobi.user.interfaces.UserService;
 import com.tobi.user.service.UserServiceImpl;
 
@@ -169,12 +171,13 @@ public class UserServiceTest {
 		}
 		
 		public List<User> getAll(){
+			System.out.println("====");
 			for(User user : super.getAll()) {
 				super.update(user);
 			}
 			return null;
 		}
-		
+
 		
 	}
 	
@@ -211,6 +214,7 @@ public class UserServiceTest {
 		}
 		
 		public List<User> getAll(){
+
 			for(User user : super.getAll()) {
 				super.update(user);
 			}
@@ -218,9 +222,9 @@ public class UserServiceTest {
 		}
 	}
 	
-	@Test
+	@Test(expected=TransientDataAccessResourceException.class)
 	public void readOnlyTransactionAttribute() {
-//		TestUserService dd = new TestUserService();
+//		testUserService= new TestUserServiceImpl();
 //		dd.getAll();
 		testUserService.getAll();
 	}
