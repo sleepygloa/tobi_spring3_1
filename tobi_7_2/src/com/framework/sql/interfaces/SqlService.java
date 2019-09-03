@@ -11,6 +11,9 @@ public interface SqlService {
 		public SqlRetrivalFailureException (String message, Throwable cause) {
 			super(message, cause);
 		}
+		public SqlRetrivalFailureException (Throwable cause) {
+			super(cause);
+		}
 
 	}
 }
