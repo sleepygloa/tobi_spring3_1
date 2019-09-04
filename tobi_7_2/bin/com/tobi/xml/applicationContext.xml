@@ -82,11 +82,26 @@
 		</property>
 	</bean> -->
 	
-	<bean id="sqlService" class="com.framework.sql.service.XmlSqlService" >
-		<property name="sqlReader" value="sqlService" />
-		<property name="sqlRegistry" value="sqlService" />
+<!-- 	<bean id="sqlService" class="com.framework.sql.service.XmlSqlService" >
+		<property name="sqlReader" value="sqlReader" />
+		<property name="sqlRegistry" value="sqlRegistry" />
+		<property name="sqlmapFile" value="sqlmap.xml" />
+	</bean> -->
+	
+<!-- 	<bean id="sqlService" class="com.framework.sql.service.BaseSqlService" >
+		<property name="sqlReader" ref="sqlReader" /> xml 을 읽음.
+		<property name="sqlRegistry" ref="sqlRegistry" /> 
+	</bean>
+	
+	<bean id="sqlReader" class="com.framework.sql.service.JaxbXmlSqlReader" >
 		<property name="sqlmapFile" value="sqlmap.xml" />
 	</bean>
+	
+	<bean id="sqlRegistry" class="com.framework.sql.service.HashMapSqlRegistry" /> -->
+	
+	<bean id="sqlService" class="com.framework.sql.service.DefaultSqlService" >
+	</bean>
+	
 	
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 	

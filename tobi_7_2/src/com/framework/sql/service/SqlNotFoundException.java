@@ -1,6 +1,6 @@
 package com.framework.sql.service;
 
-public class SqlNotFoundException extends Exception {
+public class SqlNotFoundException extends RuntimeException {
 
 	private String name;
 	
