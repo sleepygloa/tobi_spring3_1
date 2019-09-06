@@ -57,6 +57,7 @@
 	</bean> -->
 	<bean id="sqlService" class="com.framework.sql.service.OxmSqlService" >
 		<property name="unmarshaller" ref="unmarshaller" />
+		<property name="sqlmap" value="classpath:sqlmap.xml" />
 	</bean>
 	
 <!-- 	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
