@@ -7,7 +7,7 @@
 
 	<bean id="hello" class="com.pojo.service.Hello">
 		<property name="name" value="Spring" />
-		<property name="printer" value="printer" />
+		<property name="printer" ref="printer" />
 	</bean>
 	
 	<bean id="printer" class="com.pojo.service.StringPrinter" />

@@ -1,8 +1,15 @@
 # 설명 
 
-- 프록시 패턴을 이용.
-- 프록시 패턴의 트랜젝션 기능을 이용.
+#### 이전 챕터
+- StaticApplicationContext
+> 을 이용하면 자바로 등록된 VO나 기타 파일을 빈으로 등록할 수 있다.
 
-> 프록시 패턴, 부모와 자식 관계 아니면, 비즈니스로직이 진행 되는 형태에서, 기초가 되는 클래스나 인터페이스를 바라보는 형태다.
-> 기초가 되는 클래스나 인터페이스에 부입되어있는 부가기능을 이용하여 다른 기초가 되는 클래스나 인터페이스를 호출하는 형태이다.
-> 부가기능은 언제든지 바뀔수 있다.
+#### 지금 챕터
+- genericApptlicationContext();
+- GenericApplicationContext ac = new GenericApplicationContext();
+- XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(ac);
+- reader.loadBeanDefinitions("/resource/xml/genericApplicationContext.xml");
+> 을 이용하여 xml이나 외부메타정보를 불러온다.
+
+ - GenericApplicationContext ac = new GenericXmlApplicationContext("/resource/xml/genericApplicationContext.xml");
+ > 을 이용하면 한번에 xml을 불러올수있다.
